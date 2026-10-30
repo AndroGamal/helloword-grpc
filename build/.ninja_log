@@ -1,0 +1,20 @@
+# ninja log v7
+17	3860	8144102509299914	CMakeFiles/super_ads_api.dir/main.cc.obj	99ab4c500d4132ca
+3866	4070	8144102547799685	super_ads_api.exe	a65ceb9e74a59b5b
+24	4143	8144102509379944	test/CMakeFiles/super_ads_api_test.dir/test_main.cc.obj	70248886dbcfdd49
+4143	4357	8144102550555799	test/super_ads_api_test.exe	59ccda454c25c503
+43	2016	8145021861319701	generated/hello.pb.cc	27746494ef03f4cf
+43	2016	8145021861319701	generated/hello.pb.h	27746494ef03f4cf
+43	2016	8145021861319701	generated/hello.grpc.pb.cc	27746494ef03f4cf
+43	2016	8145021861319701	generated/hello.grpc.pb.h	27746494ef03f4cf
+43	2016	8145021861319701	D:/ads/Super_ads_api(c++,grpc)/super_ads_api/build/generated/hello.pb.cc	27746494ef03f4cf
+43	2016	8145021861319701	D:/ads/Super_ads_api(c++,grpc)/super_ads_api/build/generated/hello.pb.h	27746494ef03f4cf
+43	2016	8145021861319701	D:/ads/Super_ads_api(c++,grpc)/super_ads_api/build/generated/hello.grpc.pb.cc	27746494ef03f4cf
+43	2016	8145021861319701	D:/ads/Super_ads_api(c++,grpc)/super_ads_api/build/generated/hello.grpc.pb.h	27746494ef03f4cf
+2017	8171	8145021861386133	CMakeFiles/hello_proto.dir/generated/hello.pb.cc.obj	683030f95e8af47e
+2026	9689	8145021861489242	CMakeFiles/grpc_hello_server.dir/grpc_server.cc.obj	881be5a82de6049
+2031	9731	8145021861544175	CMakeFiles/grpc_hello_client.dir/grpc_client.cc.obj	ec825f85ee2f9cd7
+2021	10560	8145021861438323	CMakeFiles/hello_proto.dir/generated/hello.grpc.pb.cc.obj	76459d4087eb4dfb
+10561	11723	8145021946812495	libhello_proto.a	ac042447a17839a1
+11733	12284	8145021958472141	grpc_hello_client.exe	939fcd45250629b9
+11724	12286	8145021958472141	grpc_hello_server.exe	fe62fbb63f398ffd
