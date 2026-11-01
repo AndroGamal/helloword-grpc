@@ -4,7 +4,7 @@ FROM ubuntu:24.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+    RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
     build-essential \
@@ -16,6 +16,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev \
     libssl-dev \
     libpq-dev \
+    libprotobuf-dev \
+    protobuf-compiler \
+    protobuf-compiler-grpc \
+    libgrpc-dev \
+    libgrpc++-dev \
+    libcares-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Build Drogon
