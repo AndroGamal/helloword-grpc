@@ -21,7 +21,7 @@ ENV DEBIAN_FRONTEND=noninteractive
     protobuf-compiler-grpc \
     libgrpc-dev \
     libgrpc++-dev \
-    libcares-dev \
+    libc-ares-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Build Drogon
