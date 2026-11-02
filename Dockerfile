@@ -59,6 +59,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g \
     libssl3t64 \
     libpq5 \
+    libc-ares2 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/lib/ /usr/local/lib/
