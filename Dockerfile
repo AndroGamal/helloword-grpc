@@ -4,7 +4,7 @@ FROM ubuntu:24.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-    RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
     build-essential \
@@ -55,17 +55,21 @@ ENV PORT=8080
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libjsoncpp25 \
-    uuid-runtime \
+    libuuid1 \
     zlib1g \
-    libssl3 \
+    libssl3t64 \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/lib/ /usr/local/lib/
-COPY --from=builder /usr/local/include/ /usr/local/include/
 COPY --from=builder /app/build/ /app/build/
 
-RUN ldconfig
+RUN ldconfig \
+    && useradd --system --uid 10001 --create-home app \
+    && mkdir -p /app/uploads \
+    && chown -R app:app /app
+
+USER app
 
 WORKDIR /app
 

@@ -1,11 +1,26 @@
 #include <drogon/drogon.h>
+#include <cerrno>
+#include <cstdint>
+#include <cstdlib>
+#include <iostream>
+
 int main() {
-    //Set HTTP listener address and port
-    drogon::app().addListener("0.0.0.0", 5555);
-    //Load config file
-    //drogon::app().loadConfigFile("../config.json");
-    //drogon::app().loadConfigFile("../config.yaml");
-    //Run HTTP framework,the method will block in the internal event loop
+    constexpr long defaultPort = 8080;
+    long port = defaultPort;
+
+    if (const char* portValue = std::getenv("PORT")) {
+        char* end = nullptr;
+        errno = 0;
+        const long parsedPort = std::strtol(portValue, &end, 10);
+        if (errno == ERANGE || end == portValue || *end != '\0' ||
+            parsedPort < 1 || parsedPort > 65535) {
+            std::cerr << "Invalid PORT value: " << portValue << '\n';
+            return 1;
+        }
+        port = parsedPort;
+    }
+
+    drogon::app().addListener("0.0.0.0", static_cast<std::uint16_t>(port));
     drogon::app().run();
     return 0;
 }

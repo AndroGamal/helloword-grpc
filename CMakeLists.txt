@@ -139,7 +139,7 @@ target_link_libraries(hello_proto PUBLIC
     gRPC::grpc++
 )
 
-add_executable(grpc_hello_server grpc_server.cc)
+add_executable(grpc_hello_server GRPC_Server.cc)
 target_link_libraries(grpc_hello_server PRIVATE hello_proto)
 
 add_executable(grpc_hello_client grpc_client.cc)

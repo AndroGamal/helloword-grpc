@@ -1,0 +1,12 @@
+.git
+.gitignore
+.vs
+.vscode
+build
+cmake-build-*
+uploads
+**/__pycache__
+**/*.py[cod]
+*.exe
+*.dll
+*.so
