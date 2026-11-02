@@ -84,9 +84,16 @@ add_subdirectory(test)
 
 # ---- gRPC Hello World ----
 
-find_package(Protobuf CONFIG REQUIRED)
+# find_package(Protobuf CONFIG REQUIRED)
+# find_package(c-ares CONFIG REQUIRED)
+# find_package(gRPC CONFIG REQUIRED)
+
+find_package(Protobuf REQUIRED)
 find_package(c-ares CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
+
+message(STATUS "Protobuf version: ${Protobuf_VERSION}")
+message(STATUS "gRPC found successfully")
 
 set(PROTO_FILE "${CMAKE_CURRENT_SOURCE_DIR}/proto/hello.proto")
 set(GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
