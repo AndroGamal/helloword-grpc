@@ -1,14 +1,14 @@
-# Deploying with SnapDeploy
+# Deploying the gRPC server with SnapDeploy
 
-The project includes a Dockerfile for SnapDeploy's Docker-based deployment.
+The Dockerfile builds and runs only the gRPC server.
 
 1. Connect the repository and select the repository root as the build context.
 2. Select `Dockerfile` as the build file.
-3. Configure the service to use the HTTP port provided by the platform through
-   the `PORT` environment variable. The app defaults to port `8080` when `PORT`
-   is not set.
-4. If the application stores uploaded files, attach persistent storage at
-   `/app/uploads`. Container-local files may be removed when a deployment is
-   restarted or replaced.
+3. Configure the service to use the port provided by the platform through the
+   `PORT` environment variable. The gRPC server defaults to port `8080` when
+   `PORT` is not set.
+4. Ensure the platform's ingress supports gRPC over HTTP/2 and forwards TCP
+   traffic to the configured container port.
 
-The container listens on `0.0.0.0` and runs as an unprivileged user.
+The server listens on `0.0.0.0` and runs as an unprivileged user. The Drogon
+HTTP application is not built into or started by this deployment image.

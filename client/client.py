@@ -1,24 +1,33 @@
 
 import grpc
-import hello_pb2 as hello_pb2
-import hello_pb2_grpc as hello_pb2_grpc
+import hello_pb2
+import hello_pb2_grpc
 
 
 def main():
-    server_address = "127.0.0.1:50051"
+    server_address = "helloword-grpc-1a831.containers.snapdeploy.app:443"
 
-    with grpc.insecure_channel(server_address) as channel:
-        client = hello_pb2_grpc.GreeterStub(channel)
+    credentials = grpc.ssl_channel_credentials()
 
-        request = hello_pb2.HelloRequest(name="World")
-
+    with grpc.secure_channel(server_address, credentials) as channel:
         try:
-            response = client.SayHello(request, timeout=5)
+            grpc.channel_ready_future(channel).result(timeout=15)
+
+            client = hello_pb2_grpc.GreeterStub(channel)
+
+            request = hello_pb2.HelloRequest(name="World")
+
+            response = client.SayHello(request, timeout=15)
+
             print("Server response:", response.message)
+
+        except grpc.FutureTimeoutError:
+            print("Connection timeout: Cannot establish gRPC connection")
 
         except grpc.RpcError as error:
             print("gRPC error:", error.code())
-            print(error.details())
+            print("Details:", error.details())
+            print("Debug:", error.debug_error_string())
 
 
 if __name__ == "__main__":

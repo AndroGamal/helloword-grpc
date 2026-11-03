@@ -6,16 +6,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
-    git \
     build-essential \
     cmake \
     ninja-build \
     pkg-config \
-    libjsoncpp-dev \
-    uuid-dev \
-    zlib1g-dev \
-    libssl-dev \
-    libpq-dev \
     libprotobuf-dev \
     protobuf-compiler \
     protobuf-compiler-grpc \
@@ -24,27 +18,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libc-ares-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Build Drogon
-RUN git clone --depth 1 --recurse-submodules \
-    https://github.com/drogonframework/drogon.git /tmp/drogon \
-    && cmake -S /tmp/drogon -B /tmp/drogon/build \
-       -G Ninja \
-       -DCMAKE_BUILD_TYPE=Release \
-       -DBUILD_TESTING=OFF \
-    && cmake --build /tmp/drogon/build -j2 \
-    && cmake --install /tmp/drogon/build \
-    && ldconfig \
-    && rm -rf /tmp/drogon
-
-# Copy your C++ project
 WORKDIR /app
 COPY . .
 
-# Build your application
 RUN cmake -S . -B build \
     -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
-    && cmake --build build -j2
+    -DBUILD_DROGON_APP=OFF \
+    && cmake --build build --target grpc_hello_server -j2
 
 # ---------- Runtime Stage ----------
 FROM ubuntu:24.04 AS runtime
@@ -54,20 +35,15 @@ ENV PORT=8080
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
-    libjsoncpp25 \
-    libuuid1 \
-    zlib1g \
-    libssl3t64 \
-    libpq5 \
+    libgrpc++1.51t64 \
+    libprotobuf32t64 \
     libc-ares2 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /usr/local/lib/ /usr/local/lib/
-COPY --from=builder /app/build/ /app/build/
+COPY --from=builder /app/build/grpc_hello_server /app/grpc_hello_server
 
 RUN ldconfig \
     && useradd --system --uid 10001 --create-home app \
-    && mkdir -p /app/uploads \
     && chown -R app:app /app
 
 USER app
@@ -76,4 +52,4 @@ WORKDIR /app
 
 EXPOSE 8080
 
-CMD ["/app/build/super_ads_api"]
+CMD ["/app/grpc_hello_server"]
