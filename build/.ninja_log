@@ -1,5 +1,4 @@
 # ninja log v7
-17	3860	8144102509299914	CMakeFiles/super_ads_api.dir/main.cc.obj	99ab4c500d4132ca
 3866	4070	8144102547799685	super_ads_api.exe	a65ceb9e74a59b5b
 24	4143	8144102509379944	test/CMakeFiles/super_ads_api_test.dir/test_main.cc.obj	70248886dbcfdd49
 4143	4357	8144102550555799	test/super_ads_api_test.exe	59ccda454c25c503
