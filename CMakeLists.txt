@@ -67,13 +67,26 @@ endif ()
 
 # ---- gRPC Hello World ----
 
-# find_package(Protobuf CONFIG REQUIRED)
-# find_package(c-ares CONFIG REQUIRED)
-# find_package(gRPC CONFIG REQUIRED)
-
-find_package(Protobuf CONFIG REQUIRED)
-find_package(c-ares CONFIG REQUIRED)
-find_package(gRPC CONFIG REQUIRED)
+find_package(Protobuf CONFIG QUIET)
+if (Protobuf_FOUND)
+    find_package(c-ares CONFIG REQUIRED)
+    find_package(gRPC CONFIG REQUIRED)
+    set(PROTOC_COMMAND "$<TARGET_FILE:protobuf::protoc>")
+    set(GRPC_CPP_PLUGIN "$<TARGET_FILE:gRPC::grpc_cpp_plugin>")
+    set(GRPC_LINK_TARGET gRPC::grpc++)
+else ()
+    find_package(Protobuf MODULE REQUIRED)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GRPC REQUIRED IMPORTED_TARGET grpc++)
+    find_program(PROTOC_EXECUTABLE protoc)
+    find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin REQUIRED)
+    if (NOT PROTOC_EXECUTABLE)
+        message(FATAL_ERROR "protoc was not found")
+    endif ()
+    set(PROTOC_COMMAND "${PROTOC_EXECUTABLE}")
+    set(GRPC_CPP_PLUGIN "${GRPC_CPP_PLUGIN_EXECUTABLE}")
+    set(GRPC_LINK_TARGET PkgConfig::GRPC)
+endif ()
 
 message(STATUS "Protobuf version: ${Protobuf_VERSION}")
 message(STATUS "gRPC found successfully")
@@ -97,11 +110,11 @@ add_custom_command(
         ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
 
     COMMAND
-        $<TARGET_FILE:protobuf::protoc>
+        ${PROTOC_COMMAND}
         "--proto_path=${CMAKE_CURRENT_SOURCE_DIR}/proto"
         "--cpp_out=${GENERATED_DIR}"
         "--grpc_out=${GENERATED_DIR}"
-        "--plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>"
+        "--plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN}"
         "${PROTO_FILE}"
 
     DEPENDS "${PROTO_FILE}"
@@ -119,7 +132,7 @@ target_include_directories(hello_proto PUBLIC
 
 target_link_libraries(hello_proto PUBLIC
     protobuf::libprotobuf
-    gRPC::grpc++
+    ${GRPC_LINK_TARGET}
 )
 
 add_executable(grpc_hello_server GRPC_Server.cc)
@@ -127,4 +140,3 @@ target_link_libraries(grpc_hello_server PRIVATE hello_proto)
 
 add_executable(grpc_hello_client grpc_client.cc)
 target_link_libraries(grpc_hello_client PRIVATE hello_proto)
-
