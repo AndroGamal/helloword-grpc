@@ -1,34 +1,51 @@
+import os
+import sys
 
 import grpc
 import hello_pb2
 import hello_pb2_grpc
 
 
-def main():
-    server_address = "helloword-grpc-1a831.containers.snapdeploy.app:443"
+SERVER_ADDRESS = os.environ.get(
+    "GRPC_SERVER_ADDRESS",
+    "helloword-grpc-git.andro.blitz.cloud:443",
+)
+CONNECTION_TIMEOUT_SECONDS = 10
+RPC_TIMEOUT_SECONDS = 10
 
+
+def main():
     credentials = grpc.ssl_channel_credentials()
 
-    with grpc.secure_channel(server_address, credentials) as channel:
+    with grpc.secure_channel(SERVER_ADDRESS, credentials) as channel:
         try:
-            grpc.channel_ready_future(channel).result(timeout=15)
-
+            grpc.channel_ready_future(channel).result(
+                timeout=CONNECTION_TIMEOUT_SECONDS
+            )
             client = hello_pb2_grpc.GreeterStub(channel)
-
-            request = hello_pb2.HelloRequest(name="World")
-
-            response = client.SayHello(request, timeout=15)
-
-            print("Server response:", response.message)
-
+            response = client.SayHello(
+                hello_pb2.HelloRequest(name="World"),
+                timeout=RPC_TIMEOUT_SECONDS,
+            )
         except grpc.FutureTimeoutError:
-            print("Connection timeout: Cannot establish gRPC connection")
-
+            print(
+                f"Connection timed out after {CONNECTION_TIMEOUT_SECONDS}s: "
+                f"{SERVER_ADDRESS}",
+                file=sys.stderr,
+            )
+            return 1
         except grpc.RpcError as error:
-            print("gRPC error:", error.code())
-            print("Details:", error.details())
-            print("Debug:", error.debug_error_string())
+            print(
+                f"gRPC call failed: code={error.code()} "
+                f"details={error.details()}",
+                file=sys.stderr,
+            )
+            print(f"Debug: {error.debug_error_string()}", file=sys.stderr)
+            return 1
+
+    print("Server response:", response.message)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

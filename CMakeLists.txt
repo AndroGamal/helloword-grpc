@@ -67,6 +67,8 @@ endif ()
 
 # ---- gRPC Hello World ----
 
+find_package(Threads REQUIRED)
+
 find_package(Protobuf CONFIG QUIET)
 if (Protobuf_FOUND)
     find_package(c-ares CONFIG REQUIRED)
@@ -136,7 +138,7 @@ target_link_libraries(hello_proto PUBLIC
 )
 
 add_executable(grpc_hello_server GRPC_Server.cc)
-target_link_libraries(grpc_hello_server PRIVATE hello_proto)
+target_link_libraries(grpc_hello_server PRIVATE hello_proto Threads::Threads)
 
 add_executable(grpc_hello_client grpc_client.cc)
 target_link_libraries(grpc_hello_client PRIVATE hello_proto)
